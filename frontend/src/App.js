@@ -1,6 +1,7 @@
 import './App.css';
 import "bootstrap/dist/css/bootstrap.min.css";
 import Student from './components/Student';
+import CreateStudent from './components/CreateStudent';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
       >
         <Routes>
           <Route path='/' element={<Student />}></Route>
+          <Route path='/create' element={<CreateStudent />}></Route>
         </Routes>
       </Router>
     </div>

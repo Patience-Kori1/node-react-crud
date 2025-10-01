@@ -26,7 +26,7 @@ const database = mysql.createConnection({
     database: "crud_node_afpa"
 })
 
-// Connecter la base
+// Connection à la base
 database.connect(err => {
     if(err) {
         console.log("Erreur de connexion DB :", err);
@@ -35,7 +35,7 @@ database.connect(err => {
     }
 });
 
-// Création de l'endPoint(route)
+// Création de l'endPoint(de la route)
 app.get("/", (req, res) => {
     // res.json("Salut à toi depuis le backend"); 
     const sql = "SELECT * FROM student";
