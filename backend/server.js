@@ -16,7 +16,8 @@ const corsOptions = {
     credentials: true,
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));//pour plus de précision mais app.use(cors());faisable
+app.use(express.json()); // Middleware pour lire le JSON envoyé dans le body
 
 // Création de la base de donnée
 const database = mysql.createConnection({
@@ -35,7 +36,7 @@ database.connect(err => {
     }
 });
 
-// Création de l'endPoint(de la route)
+// Route pour récupérer tous les étudiants
 app.get("/", (req, res) => {
     // res.json("Salut à toi depuis le backend"); 
     const sql = "SELECT * FROM student";
@@ -43,6 +44,31 @@ app.get("/", (req, res) => {
         if(err) return res.json("Error");
         return res.json(data);
     })
+})
+
+// Route POST pour créer un étudiant
+app.post('/create', (req, res) => {
+  // Requête SQL pour insérer un nouvel étudiant
+  //
+  const sql = "INSERT INTO student (`name`, `email`) VALUES (?, ?)";//certains ont une erreur avec les deux ? peu etre en mettre qu'un
+
+  // Valeurs à insérer
+  const values = [ 
+    req.body.name, // Nom de l'étudiant
+    req.body.email // Email de l'étudiant
+  ];
+
+  // Exécution de la requête SQL
+  database.query(sql, values, (err, data) => {
+    // Si une erreur se produit, renvoie un message d'erreur
+    if (err) {
+      console.log('SQL Error:', err);
+      return res.status(500).json({ error: 'Error in inserting student' });
+    }
+    // if(err) return res.json("Error");
+    // Sinon, renvoie les données insérées
+    return res.json(data);
+  })
 })
 
 app.listen(8081, () => {
