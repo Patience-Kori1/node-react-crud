@@ -116,6 +116,22 @@ app.get("/student/:id", (req, res) => {
   });
 });
 
+// Route pour supprimer un étudiant
+app.delete('/student/:id', (req, res) => {
+  // Requête SQL pour supprimer un étudiant
+  const sql = "DELETE FROM student WHERE id =?";
+  // ID de l'étudiant à supprimer
+  const id = req.params.id; 
+  
+  // Exécution de la requête SQL
+  database.query(sql, [id], (err, data) => {
+    // Si une erreur se produit, renvoie un message d'erreur
+    if(err) return res.json("Error");
+    // Sinon, renvoie les données supprimées
+    return res.json(data);
+  })
+})
+
 app.listen(8081, () => {
     console.log("Serveur backend sur le port 8081 pak pak");
 })
