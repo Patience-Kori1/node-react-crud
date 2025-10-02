@@ -1,22 +1,39 @@
 import React from 'react'
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-function CreateStudent() {
+function UpdateStudent() {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const {id} = useParams();
     const navigate = useNavigate();
 
+    // Charger les données existantes de l'étudiant
+    useEffect
+    (
+        () => {
+            console.log("ID reçu dans UpdateStudent:", id);
+            axios.get(`http://localhost:8081/student/${id}`)
+            .then(res => {
+                setName(res.data.name);
+                setEmail(res.data.email);
+            })
+            .catch(err => console.error("Erreur lors du fetch de l'étudiant :", err));
+        }, 
+        [id]
+    );
+
+    // Soumettre les données modifiées
     function handleSubmit(event) { //handle submit function for the form
         event.preventDefault(); 
-        axios.post('http://localhost:8081/create', {name, email}) //methode post on create page form
+        axios.put(`http://localhost:8081/update/${id}`, { name, email}) //methode post on create page form
         .then(res => {
-            console.log('insertion réussi:' ,res.data);
+            console.log('modification réussie:' ,res.data);
             navigate('/'); // après ajout, retour vers la liste
         })
-        .catch(err => console.error("Erreur lors de l'ajout :", err));
+        .catch(err => console.error("Erreur lors de l'update :", err));
     }
 
 
@@ -24,7 +41,7 @@ function CreateStudent() {
     <div className='d-flex vh-100 bg-primary justify-content-center align-items-center'>
         <div className='w-50 bg-white rounded p-3'>
             <form onSubmit={handleSubmit} >
-                <h2>Ajouter un étudiant</h2>
+                <h2>Modifier un étudiant</h2>
                 <div className='mb-2'>
                     <label htmlFor="name">Nom </label>
                     <input 
@@ -49,4 +66,4 @@ function CreateStudent() {
   )
 }
 
-export default CreateStudent
+export default UpdateStudent
